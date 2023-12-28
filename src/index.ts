@@ -50,15 +50,27 @@ app.get('/account/own/:account', async (req: Request, res: Response) => {
   });
 })
 
-app.get('/collections/own/:account', (req: Request, res: Response) => {
+app.get('/collections/own/:account', async (req: Request, res: Response) => {
   const { account } = req.params
-  const { ercType, limit, offset } = req.query
+  const { erc_type, limit, offset } = req.query
+
+  const response = await Moralis.EvmApi.nft.getWalletNFTCollections({
+    chain: chainId,
+    address: account,
+    limit: limit ? parseInt(limit as string) : 100,
+  });
 
   res.json({
-    account,
-    ercType,
-    limit,
-    offset
+    code: 200,
+    msg: 'success',
+    data: response.result.map((item) => ({
+      "contract_address": item.tokenAddress,
+      "name": item.name,
+      "symbol": item.symbol,
+      "description": item.name,
+      "attributes": [],
+      "erc_type": "erc721",
+    }))
   });
 })
 
