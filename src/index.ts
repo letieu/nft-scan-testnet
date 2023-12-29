@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express'
 import 'dotenv/config'
 import Moralis from 'moralis'
+import { EvmNftCollection } from 'moralis/lib/commonEvmUtils/index';
 
 const app = express()
-const port = 3000
+const port = 3078
 const chainId = process.env.CHAIN_ID
 
 Moralis.start({
@@ -54,22 +55,33 @@ app.get('/collections/own/:account', async (req: Request, res: Response) => {
   const { account } = req.params
   const { erc_type, limit, offset } = req.query
 
-  const response = await Moralis.EvmApi.nft.getWalletNFTCollections({
-    chain: chainId,
-    address: account,
-    limit: limit ? parseInt(limit as string) : 100,
-  });
+  const items: EvmNftCollection[] = [];
+
+  while (true) {
+    const response = await Moralis.EvmApi.nft.getWalletNFTCollections({
+      chain: chainId,
+      address: account,
+      limit: limit ? parseInt(limit as string) : 100,
+    });
+
+    items.push(...response.result.filter(
+      (item) => item.contractType?.toLowerCase() === erc_type?.toString().toLowerCase())
+    );
+
+    const isEnd = !response.pagination.cursor;
+    if (isEnd) break;
+  }
 
   res.json({
     code: 200,
     msg: 'success',
-    data: response.result.map((item) => ({
+    data: items.map((item) => ({
       "contract_address": item.tokenAddress,
       "name": item.name,
       "symbol": item.symbol,
       "description": item.name,
       "attributes": [],
-      "erc_type": "erc721",
+      "erc_type": erc_type,
     }))
   });
 })
