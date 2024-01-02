@@ -2,10 +2,16 @@ import express, { Request, Response } from 'express'
 import 'dotenv/config'
 import Moralis from 'moralis'
 import { EvmNftCollection } from 'moralis/lib/commonEvmUtils/index';
+import YAML from 'yaml';
+import fs from 'fs';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express()
 const port = 3078
 const chainId = process.env.CHAIN_ID
+
+const yamlFile = fs.readFileSync('./swagger.yaml', 'utf8');
+const swaggerDocument = YAML.parse(yamlFile);
 
 Moralis.start({
   apiKey: process.env.MORALIS_API_KEY,
@@ -85,6 +91,8 @@ app.get('/collections/own/:account', async (req: Request, res: Response) => {
     }))
   });
 })
+
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

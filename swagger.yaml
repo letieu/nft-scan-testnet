@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: NFT Service API
+  description: APIs for interacting with NFTs
+  version: 1.0.0
+paths:
+  /account/own/{account}:
+    get:
+      summary: Get NFTs owned by an account
+      parameters:
+        - name: account
+          in: path
+          required: true
+          description: Account address
+          schema:
+            type: string
+        - name: erc_type
+          in: query
+          description: ERC type filter
+          schema:
+            type: string
+        - name: contract_address
+          in: query
+          description: Contract address filter
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of items to return
+          schema:
+            type: integer
+        - name: cursor
+          in: query
+          description: Cursor for pagination
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 100
+                      next:
+                        type: string
+                        example: NEXT_CURSOR_STRING
+                      content:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            contract_address:
+                              type: string
+                            contract_name:
+                              type: string
+                            contract_token_id:
+                              type: string
+                            token_id:
+                              type: string
+                            erc_type:
+                              type: string
+                            amount:
+                              type: integer
+                            minter:
+                              type: string
+                            owner:
+                              type: string
+                            token_uri:
+                              type: string
+                            metadata_json:
+                              type: object
+                            name:
+                              type: string
+                            attributes:
+                              type: array
+                              items:
+                                type: string
+                              example: []
+      requestBody:
+        required: false
+  /collections/own/{account}:
+    get:
+      summary: Get NFT collections owned by an account
+      parameters:
+        - name: account
+          in: path
+          required: true
+          description: Account address
+          schema:
+            type: string
+        - name: erc_type
+          in: query
+          description: ERC type filter
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of items to return
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Pagination offset
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        contract_address:
+                          type: string
+                        name:
+                          type: string
+                        symbol:
+                          type: string
+                        description:
+                          type: string
+                        attributes:
+                          type: array
+                          items:
+                            type: string
+                          example: []
+                        erc_type:
+                          type: string
+      requestBody:
+        required: false
