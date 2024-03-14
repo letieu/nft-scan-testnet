@@ -15,7 +15,7 @@ Open `http://localhost:3078/` in your browser to see API docs.
 ## Run use Docker
 
 ```bash
-docker run -p 3078:3078 -e 'MORALIS_API_KEY=xxx' -e 'CHAIN_ID=0x13881' letieu/nft-scan-testnet:1.4
+docker run -p 3078:3078 -e 'MORALIS_API_KEY=xxx' -e 'CHAIN_ID=0x13881' letieu/nft-scan-testnet:1.7
 ```
 
 env variables:
